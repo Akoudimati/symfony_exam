@@ -1,284 +1,12 @@
-
-i want to do edit update delet and insert so  what i want from you to take on  this database and to
-    add to the studet. crud systeem and i  want to make relations btween the studentgroup and the student entity
-    and i want you to gave me with symfony  the (student crud system) 
-                              
-                              now  i want you to gave me every thing in one code and i wil spilt the codes gave me every thing in one 
-                              longe code pleas just one long and i will spil it dont warry 
-                                 
-                                 
-                                 
-                                 
-                                 
-                                 
-                                 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
-
-
-
---
-
--- --------------------------------------------------------
-
---
--- Tabelstructuur voor tabel `doctrine_migration_versions`
---
-
-CREATE TABLE `doctrine_migration_versions` (
-                                               `version` varchar(191) NOT NULL,
-                                               `executed_at` datetime DEFAULT NULL,
-                                               `execution_time` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Gegevens worden geëxporteerd voor tabel `doctrine_migration_versions`
---
-
-INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_time`) VALUES
-                                                                                           ('DoctrineMigrations\\Version20240925120001', '2024-09-25 14:00:23', 24),
-                                                                                           ('DoctrineMigrations\\Version20240925131135', '2024-09-25 15:11:54', 26),
-                                                                                           ('DoctrineMigrations\\Version20240925151921', '2024-09-25 17:20:46', 77);
-
--- --------------------------------------------------------
-
---
--- Tabelstructuur voor tabel `messenger_messages`
---
-
-CREATE TABLE `messenger_messages` (
-                                      `id` bigint(20) NOT NULL,
-                                      `body` longtext NOT NULL,
-                                      `headers` longtext NOT NULL,
-                                      `queue_name` varchar(190) NOT NULL,
-                                      `created_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
-                                      `available_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
-                                      `delivered_at` datetime DEFAULT NULL COMMENT '(DC2Type:datetime_immutable)'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Tabelstructuur voor tabel `school_group`
---
-
-CREATE TABLE `school_group` (
-                                `id` int(11) NOT NULL,
-                                `name` varchar(255) NOT NULL,
-                                `year` int(11) NOT NULL,
-                                `teacher` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Gegevens worden geëxporteerd voor tabel `school_group`
---
-
-INSERT INTO `school_group` (`id`, `name`, `year`, `teacher`) VALUES
-                                                                 (1, 'B1J', 1, 'S Bechoe'),
-                                                                 (2, 'B1K', 1, 'K Mooijman'),
-                                                                 (3, 'B1L', 1, 'L Govea'),
-                                                                 (4, 'B1M', 1, 'P Thong'),
-                                                                 (5, 'B1P', 1, 'M Hutten'),
-                                                                 (6, 'B2H', 2, 'L Govea'),
-                                                                 (7, 'B2J', 2, 'M Kleijwegt'),
-                                                                 (8, 'B2K', 2, 'K Mooijman'),
-                                                                 (9, 'B2L', 2, 'F Dasci'),
-                                                                 (10, 'B3M', 3, 'M Sarikaya');
-
--- --------------------------------------------------------
-
---
--- Tabelstructuur voor tabel `student`
---
-
-CREATE TABLE `student` (
-                           `id` int(11) NOT NULL,
-                           `first_name` varchar(255) NOT NULL,
-                           `email` varchar(255) NOT NULL,
-                           `last_name` varchar(255) NOT NULL,
-                           `age` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Gegevens worden geëxporteerd voor tabel `student`
---
-
-INSERT INTO `student` (`id`, `first_name`, `email`, `last_name`, `age`) VALUES
-                                                                            (1, 'Piet', 'p.jansen@rocmondriaan.nl', 'Jansen', 18),
-                                                                            (2, 'Klaas', 'k.devries@rocmondriaan.nl', 'de Vries', 17),
-                                                                            (3, 'Ria', 'r.degraaf@rocmondriaan.nl', 'de Graaf', 16);
-
--- --------------------------------------------------------
-
---
--- Tabelstructuur voor tabel `vacation`
---
-
-CREATE TABLE `vacation` (
-                            `id` int(11) NOT NULL,
-                            `name` varchar(255) NOT NULL,
-                            `start_date` date NOT NULL,
-                            `end_date` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Gegevens worden geëxporteerd voor tabel `vacation`
---
-
-INSERT INTO `vacation` (`id`, `name`, `start_date`, `end_date`) VALUES
-                                                                    (1, 'Herfstvakantie', '2024-10-26', '2024-11-03'),
-                                                                    (2, 'Kerstvakantie', '2024-12-21', '2025-01-05'),
-                                                                    (3, 'Voorjaarsvakantie', '2025-02-22', '2025-03-02'),
-                                                                    (4, 'Meivakantie', '2025-04-19', '2025-05-04'),
-                                                                    (5, 'Zomervakantie', '2025-07-19', '2025-08-31');
-
---
--- Indexen voor geëxporteerde tabellen
---
-
---
--- Indexen voor tabel `doctrine_migration_versions`
---
-ALTER TABLE `doctrine_migration_versions`
-    ADD PRIMARY KEY (`version`);
-
---
--- Indexen voor tabel `messenger_messages`
---
-ALTER TABLE `messenger_messages`
-    ADD PRIMARY KEY (`id`),
-  ADD KEY `IDX_75EA56E0FB7336F0` (`queue_name`),
-  ADD KEY `IDX_75EA56E0E3BD61CE` (`available_at`),
-  ADD KEY `IDX_75EA56E016BA31DB` (`delivered_at`);
-
---
--- Indexen voor tabel `school_group`
---
-ALTER TABLE `school_group`
-    ADD PRIMARY KEY (`id`);
-
---
--- Indexen voor tabel `student`
---
-ALTER TABLE `student`
-    ADD PRIMARY KEY (`id`);
-
---
--- Indexen voor tabel `vacation`
---
-ALTER TABLE `vacation`
-    ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT voor geëxporteerde tabellen
---
-
---
--- AUTO_INCREMENT voor een tabel `messenger_messages`
---
-ALTER TABLE `messenger_messages`
-    MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT voor een tabel `school_group`
---
-ALTER TABLE `school_group`
-    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT voor een tabel `student`
---
-ALTER TABLE `student`
-    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT voor een tabel `vacation`
---
-ALTER TABLE `vacation`
-    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 <?php
 
 namespace App\Entity;
 
-use App\Repository\SchoolGroupRepository;
-use Doctrine\ORM\Mapping as ORM;
-
-#[ORM\Entity(repositoryClass: SchoolGroupRepository::class)]
-class SchoolGroup
-{
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
-
-    #[ORM\Column]
-    private ?int $year = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $teacher = null;
-
-public function getId(): ?int
-    {
-        return $this->id;
-}
-
-    public function getName(): ?string
-    {
-        return $this->name;
-}
-
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-
-return $this;
-}
-
-    public function getYear(): ?int
-    {
-        return $this->year;
-}
-
-    public function setYear(int $year): static
-    {
-        $this->year = $year;
-
-return $this;
-}
-
-    public function getTeacher(): ?string
-    {
-        return $this->teacher;
-}
-
-    public function setTeacher(string $teacher): static
-    {
-        $this->teacher = $teacher;
-
-return $this;
-}
-}
- // student entity 
-<?php
-
-namespace App\Entity;
-
-use App\Repository\StudentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: StudentRepository::class)]
+#[ORM\Entity]
 class Student
 {
     #[ORM\Id]
@@ -290,129 +18,151 @@ class Student
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $email = null;
-
-    #[ORM\Column(length: 255)]
     private ?string $lastName = null;
+
+    #[ORM\Column(length: 255, unique: true)]
+    private ?string $email = null;
 
     #[ORM\Column]
     private ?int $age = null;
 
-public function __construct()
-    {
-
-    }
+    #[ORM\ManyToOne(targetEntity: SchoolGroup::class, inversedBy: 'students')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?SchoolGroup $schoolGroup = null;
 
     public function getId(): ?int
     {
         return $this->id;
-}
+    }
 
     public function getFirstName(): ?string
     {
         return $this->firstName;
-}
+    }
 
-    public function setFirstName(string $firstName): static
+    public function setFirstName(string $firstName): self
     {
         $this->firstName = $firstName;
-
-return $this;
-}
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-}
-
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
-
-return $this;
-}
+        return $this;
+    }
 
     public function getLastName(): ?string
     {
         return $this->lastName;
-}
+    }
 
-    public function setLastName(string $lastName): static
+    public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
+        return $this;
+    }
 
-return $this;
-}
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+        return $this;
+    }
 
     public function getAge(): ?int
     {
         return $this->age;
-}
+    }
 
-    public function setAge(int $age): static
+    public function setAge(int $age): self
     {
         $this->age = $age;
+        return $this;
+    }
 
-return $this;
+    public function getSchoolGroup(): ?SchoolGroup
+    {
+        return $this->schoolGroup;
+    }
+
+    public function setSchoolGroup(?SchoolGroup $schoolGroup): self
+    {
+        $this->schoolGroup = $schoolGroup;
+        return $this;
+    }
 }
+
+// StudentController.php
+
+namespace App\Controller;
+
+use App\Entity\Student;
+use App\Form\StudentType;
+use App\Repository\StudentRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class StudentController extends AbstractController
+{
+    #[Route('/students', name: 'student_index', methods: ['GET'])]
+    public function index(StudentRepository $studentRepository): Response
+    {
+        return $this->render('student/index.html.twig', [
+            'students' => $studentRepository->findAll(),
+        ]);
+    }
+
+    #[Route('/student/new', name: 'student_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $student = new Student();
+        $form = $this->createForm(StudentType::class, $student);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($student);
+            $entityManager->flush();
+            return $this->redirectToRoute('student_index');
+        }
+
+        return $this->render('student/new.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/student/{id}', name: 'student_show', methods: ['GET'])]
+    public function show(Student $student): Response
+    {
+        return $this->render('student/show.html.twig', [
+            'student' => $student,
+        ]);
+    }
+
+    #[Route('/student/{id}/edit', name: 'student_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Student $student, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(StudentType::class, $student);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            return $this->redirectToRoute('student_index');
+        }
+
+        return $this->render('student/edit.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/student/{id}', name: 'student_delete', methods: ['POST'])]
+    public function delete(Request $request, Student $student, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete' . $student->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($student);
+            $entityManager->flush();
+        }
+        return $this->redirectToRoute('student_index');
+    }
 }
-//{% extends 'base.html.twig' %}
-
-{% block body %}
-    this is my sduet dont change the styling just add what we need 
-    <h1 class="masthead-heading text-uppercase mb-0">
-        Studenten overzicht
-    </h1>
-    <table class="table table-hover table-striped">
-        <thead>
-        <tr>
-            <th>Voornaam</th>
-            <th>Achternaam</th>
-            <th>Email</th>
-            <th>Leeftijd</th>
-            <th>Acties</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for student in students %}
-            <tr>
-                <td>{{ student.firstName }}</td>
-                <td>{{ student.lastName }}</td>
-                <td>{{ student.email }}</td>
-                <td>{{ student.age }}</td>
-                <td><a class="btn btn-outline-secondary" href="{{ path('app_show_student', {'id': student.id }) }}" role="button">Toon Student</a></td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-{% endblock %}
-{% extends 'base.html.twig' %}
-
-{% block body %}
-
-    <h1 class="masthead-heading text-uppercase mb-0">
-        {{ student.firstName }} {{ student.lastName }}
-    </h1>
-    <table class="table table-hover table-striped">
-        <thead>
-        <tr>
-            <th>Voornaam</th>
-            <td>{{ student.firstName }}</td>
-        </tr>
-        <tr>
-            <th>Achternaam</th>
-            <td>{{ student.lastName }}</td>
-        </tr>
-        <tr>
-            <th>Email</th>
-            <td>{{ student.email }}</td>
-        </tr>
-        <tr>
-            <th>Leeftijd</th>
-            <td>{{ student.age }}</td>
-        </tr>
-
-        </tr>
-        </thead>
-    </table>
-{% endblock %}
