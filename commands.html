@@ -1,6 +1,43 @@
-An exception occurred while executing a query: SQLSTATE[42S22]: Column not found: 1054 Unknown column 't0.school_group_id' in 'field list'
-Doctrine\DBAL\Exception\
-InvalidFieldNameException
-Show exception properties
-in C:\Users\SD Student\Documents\GitHub\sd23-p07-symfony-eindtoets-2h-Akoudimati\vendor\doctrine\dbal\src\Driver\API\MySQL\ExceptionConverter.php (line 67)
-                return new UniqueConstraintViolationException($exception, $query);            case 1054:            case 1166:            case 1611:                return new InvalidFieldNameException($exception, $query);            case 1052:
+<?php
+
+// src/Entity/Student.php
+namespace App\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity()]
+class Student
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $firstName = null;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $lastName = null;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $email = null;
+
+    #[ORM\Column(type: 'integer')]
+    private ?int $age = null;
+
+    #[ORM\ManyToOne(targetEntity: SchoolGroup::class, inversedBy: 'students')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?SchoolGroup $schoolGroup = null;
+
+    public function getId(): ?int { return $this->id; }
+    public function getFirstName(): ?string { return $this->firstName; }
+    public function setFirstName(string $firstName): self { $this->firstName = $firstName; return $this; }
+    public function getLastName(): ?string { return $this->lastName; }
+    public function setLastName(string $lastName): self { $this->lastName = $lastName; return $this; }
+    public function getEmail(): ?string { return $this->email; }
+    public function setEmail(string $email): self { $this->email = $email; return $this; }
+    public function getAge(): ?int { return $this->age; }
+    public function setAge(int $age): self { $this->age = $age; return $this; }
+    public function getSchoolGroup(): ?SchoolGroup { return $this->schoolGroup; }
+    public function setSchoolGroup(?SchoolGroup $schoolGroup): self { $this->schoolGroup = $schoolGroup; return $this; }
+}
