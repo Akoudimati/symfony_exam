@@ -1,123 +1,77 @@
-<?php
+again  this now i want now the next code from you  i want the next code i want the full student   Form\StudentType.php
+please gave me the full needed codes i  i dont want you to change i just want now new working codes
+for every thing in long code  and i will split it
+ not only that i want if i want to delet to use flsh  befor i delet i want to see what  i want to delet
+and after that i want 3 btns to one call it toonstudent and the 2 editstudet and delet
+in the klassen overzicht i want you to make the toon student make sure i am getting the if i click on the  toon student to see the student in this groep  
+so make it for me also after you finsh  
+
 
 namespace App\Controller;
 
-use App\Entity\Student;
-use App\Form\StudentType;
+use App\Entity\SchoolGroup;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class StudentController extends AbstractController
+class SchoolGroupController extends AbstractController
 {
-    #[Route('/students', name: 'app_students')]
-    public function index(EntityManagerInterface $em): Response
+    #[Route('/', name: 'app_school_group')]
+    public function index(): Response
     {
-        $students = $em->getRepository(Student::class)->findAll();
-        return $this->render('student/index.html.twig', ['students' => $students]);
+        return $this->render('school_group/index.html.twig');
     }
 
-    #[Route('/student/new', name: 'app_new_student')]
-    public function new(Request $request, EntityManagerInterface $em): Response
+    #[Route('/school_group', name: 'app_school_group_show')]
+    public function show(EntityManagerInterface $entityManager): Response
     {
-        $student = new Student();
-        $form = $this->createForm(StudentType::class, $student);
-        $form->handleRequest($request);
-        
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($student);
-            $em->flush();
-            return $this->redirectToRoute('app_students');
-        }
-        
-        return $this->render('student/new.html.twig', [
-            'form' => $form->createView(),
+        $schoolGroups = $entityManager->getRepository(SchoolGroup::class)->findAll();
+
+        return $this->render('school_group/show.html.twig', [
+            'school_groups' => $schoolGroups
         ]);
     }
 
-    #[Route('/student/edit/{id}', name: 'app_edit_student')]
-    public function edit(Request $request, Student $student, EntityManagerInterface $em): Response
+
+    #[Route('/school_group/{id}', name: 'app_school_group_show_id')]
+    public function showGroupId(EntityManagerInterface $entityManager, int $id): Response
     {
-        $form = $this->createForm(StudentType::class, $student);
-        $form->handleRequest($request);
+        $schoolGroups = $entityManager->getRepository(SchoolGroup::class)->find($id);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->flush();
-            return $this->redirectToRoute('app_students');
-        }
-
-        return $this->render('student/edit.html.twig', [
-            'form' => $form->createView(),
+        return $this->render('school_group/show.html.twig', [
+            'school_groups' => $schoolGroups
         ]);
     }
 
-    #[Route('/student/delete/{id}', name: 'app_delete_student', methods: ['POST'])]
-    public function delete(Request $request, Student $student, EntityManagerInterface $em): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$student->getId(), $request->request->get('_token'))) {
-            $em->remove($student);
-            $em->flush();
-        }
-        return $this->redirectToRoute('app_students');
-    }
 }
-
-// student/index.html.twig
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1 class="masthead-heading text-uppercase mb-0">Studenten overzicht</h1>
-    <a class="btn btn-primary" href="{{ path('app_new_student') }}">Nieuwe Student</a>
-    <table class="table table-hover table-striped">
-        <thead>
-        <tr>
-            <th>Voornaam</th>
-            <th>Achternaam</th>
-            <th>Email</th>
-            <th>Leeftijd</th>
-            <th>Acties</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for student in students %}
+<h1 class="masthead-heading text-uppercase mb-0">
+Klassen overzicht
+</h1>
+<table class="table table-hover table-striped">
+    <thead>
+    <tr>
+        <th>Naam</th>
+        <th>Jaar</th>
+        <th>SLB'er</th>
+        <th>Acties</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for group in school_groups %}
             <tr>
-                <td>{{ student.firstName }}</td>
-                <td>{{ student.lastName }}</td>
-                <td>{{ student.email }}</td>
-                <td>{{ student.age }}</td>
-                <td>
-                    <a class="btn btn-outline-secondary" href="{{ path('app_edit_student', {'id': student.id }) }}">Bewerk</a>
-                    <form method="post" action="{{ path('app_delete_student', {'id': student.id}) }}" style="display:inline;">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ student.id) }}">
-                        <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Weet je zeker dat je deze student wilt verwijderen?');">Verwijder</button>
-                    </form>
-                </td>
+                <td>{{ group.name }}</td>
+                <td>{{ group.year }}</td>
+                <td>{{ group.teacher }}</td>
+                <td><a class="btn btn-outline-secondary" href="{{ path('app_school_group_show_id', {'id': group.id }) }}" role="button">Toon Student</a></td>
             </tr>
         {% endfor %}
-        </tbody>
-    </table>
-{% endblock %}
+    </tbody>
+</table>
 
-// student/new.html.twig
-{% extends 'base.html.twig' %}
 
-{% block body %}
-    <h1 class="masthead-heading text-uppercase mb-0">Nieuwe Student</h1>
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn btn-success">Opslaan</button>
-    {{ form_end(form) }}
-{% endblock %}
 
-// student/edit.html.twig
-{% extends 'base.html.twig' %}
-
-{% block body %}
-    <h1 class="masthead-heading text-uppercase mb-0">Bewerk Student</h1>
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn btn-success">Opslaan</button>
-    {{ form_end(form) }}
 {% endblock %}
