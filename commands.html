@@ -1,12 +1,75 @@
-i want you to gave me the form studenttype and i want you to gave me the hmtl.twig .code and the rest of every thing  
-please i want full loang code C:\Users\SD Student\Documents\GitHub\sd23-p07-symfony-eindtoets-2h-Akoudimati\src\Form\StudentType.php
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Student;
+use App\Form\StudentType;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class StudentController extends AbstractController
+{
+    #[Route('/students', name: 'app_students')]
+    public function index(EntityManagerInterface $em): Response
+    {
+        $students = $em->getRepository(Student::class)->findAll();
+        return $this->render('student/index.html.twig', ['students' => $students]);
+    }
+
+    #[Route('/student/new', name: 'app_new_student')]
+    public function new(Request $request, EntityManagerInterface $em): Response
+    {
+        $student = new Student();
+        $form = $this->createForm(StudentType::class, $student);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($student);
+            $em->flush();
+            return $this->redirectToRoute('app_students');
+        }
+        
+        return $this->render('student/new.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/student/edit/{id}', name: 'app_edit_student')]
+    public function edit(Request $request, Student $student, EntityManagerInterface $em): Response
+    {
+        $form = $this->createForm(StudentType::class, $student);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+            return $this->redirectToRoute('app_students');
+        }
+
+        return $this->render('student/edit.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/student/delete/{id}', name: 'app_delete_student', methods: ['POST'])]
+    public function delete(Request $request, Student $student, EntityManagerInterface $em): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$student->getId(), $request->request->get('_token'))) {
+            $em->remove($student);
+            $em->flush();
+        }
+        return $this->redirectToRoute('app_students');
+    }
+}
+
+// student/index.html.twig
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    this is my sduet dont change the styling just add what we need
-<h1 class="masthead-heading text-uppercase mb-0">
-Studenten overzicht
-</h1>
+    <h1 class="masthead-heading text-uppercase mb-0">Studenten overzicht</h1>
+    <a class="btn btn-primary" href="{{ path('app_new_student') }}">Nieuwe Student</a>
     <table class="table table-hover table-striped">
         <thead>
         <tr>
@@ -24,39 +87,37 @@ Studenten overzicht
                 <td>{{ student.lastName }}</td>
                 <td>{{ student.email }}</td>
                 <td>{{ student.age }}</td>
-                <td><a class="btn btn-outline-secondary" href="{{ path('app_show_student', {'id': student.id }) }}" role="button">Toon Student</a></td>
+                <td>
+                    <a class="btn btn-outline-secondary" href="{{ path('app_edit_student', {'id': student.id }) }}">Bewerk</a>
+                    <form method="post" action="{{ path('app_delete_student', {'id': student.id}) }}" style="display:inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ student.id) }}">
+                        <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Weet je zeker dat je deze student wilt verwijderen?');">Verwijder</button>
+                    </form>
+                </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 {% endblock %}
+
+// student/new.html.twig
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <h1 class="masthead-heading text-uppercase mb-0">Nieuwe Student</h1>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn btn-success">Opslaan</button>
+    {{ form_end(form) }}
+{% endblock %}
 
-    <h1 class="masthead-heading text-uppercase mb-0">
-        {{ student.firstName }} {{ student.lastName }}
-    </h1>
-    <table class="table table-hover table-striped">
-        <thead>
-        <tr>
-            <th>Voornaam</th>
-            <td>{{ student.firstName }}</td>
-        </tr>
-        <tr>
-            <th>Achternaam</th>
-            <td>{{ student.lastName }}</td>
-        </tr>
-        <tr>
-            <th>Email</th>
-            <td>{{ student.email }}</td>
-        </tr>
-        <tr>
-            <th>Leeftijd</th>
-            <td>{{ student.age }}</td>
-        </tr>
+// student/edit.html.twig
+{% extends 'base.html.twig' %}
 
-        </tr>
-        </thead>
-    </table>
+{% block body %}
+    <h1 class="masthead-heading text-uppercase mb-0">Bewerk Student</h1>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn btn-success">Opslaan</button>
+    {{ form_end(form) }}
 {% endblock %}
