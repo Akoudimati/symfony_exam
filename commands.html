@@ -1,2 +1,100 @@
+<?php
 
- make every thing in one lang code and i will split the code to pages please 
+namespace App\Controller;
+
+use App\Entity\Student;
+use App\Form\StudentType;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class StudentController extends AbstractController
+{
+    #[Route('/students', name: 'app_students')]
+    public function index(EntityManagerInterface $entityManager): Response
+    {
+        $students = $entityManager->getRepository(Student::class)->findAll();
+
+        return $this->render('student/index.html.twig', ['students' => $students]);
+    }
+
+    #[Route('/student/new', name: 'app_student_new')]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $student = new Student();
+        $form = $this->createForm(StudentType::class, $student);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($student);
+            $entityManager->flush();
+            $this->addFlash('success', 'Student toegevoegd!');
+            return $this->redirectToRoute('app_students');
+        }
+
+        return $this->render('student/form.html.twig', ['form' => $form->createView()]);
+    }
+
+    #[Route('/student/{id}/edit', name: 'app_student_edit')]
+    public function edit(Request $request, EntityManagerInterface $entityManager, Student $student): Response
+    {
+        $form = $this->createForm(StudentType::class, $student);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            $this->addFlash('success', 'Student bijgewerkt!');
+            return $this->redirectToRoute('app_students');
+        }
+
+        return $this->render('student/form.html.twig', ['form' => $form->createView()]);
+    }
+
+    #[Route('/student/{id}/delete', name: 'app_student_delete', methods: ['POST'])]
+    public function delete(Request $request, EntityManagerInterface $entityManager, Student $student): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$student->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($student);
+            $entityManager->flush();
+            $this->addFlash('success', 'Student verwijderd!');
+        }
+
+        return $this->redirectToRoute('app_students');
+    }
+
+    #[Route('/student/{id}', name: 'app_show_student')]
+    public function show(Student $student): Response
+    {
+        return $this->render('student/show.html.twig', ['student' => $student]);
+    }
+}
+
+class StudentType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('firstName', TextType::class, ['label' => 'Voornaam'])
+            ->add('lastName', TextType::class, ['label' => 'Achternaam'])
+            ->add('email', EmailType::class, ['label' => 'E-mail'])
+            ->add('age', IntegerType::class, ['label' => 'Leeftijd'])
+            ->add('save', SubmitType::class, [
+                'label' => 'Opslaan',
+                'attr' => ['class' => 'btn btn-primary']
+            ]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(['data_class' => Student::class]);
+    }
+}
