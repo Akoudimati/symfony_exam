@@ -1,168 +1,62 @@
-<?php
+i want you to gave me the form studenttype and i want you to gave me the hmtl.twig .code and the rest of every thing  
+please i want full loang code C:\Users\SD Student\Documents\GitHub\sd23-p07-symfony-eindtoets-2h-Akoudimati\src\Form\StudentType.php
+{% extends 'base.html.twig' %}
 
-namespace App\Entity;
+{% block body %}
+    this is my sduet dont change the styling just add what we need
+<h1 class="masthead-heading text-uppercase mb-0">
+Studenten overzicht
+</h1>
+    <table class="table table-hover table-striped">
+        <thead>
+        <tr>
+            <th>Voornaam</th>
+            <th>Achternaam</th>
+            <th>Email</th>
+            <th>Leeftijd</th>
+            <th>Acties</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for student in students %}
+            <tr>
+                <td>{{ student.firstName }}</td>
+                <td>{{ student.lastName }}</td>
+                <td>{{ student.email }}</td>
+                <td>{{ student.age }}</td>
+                <td><a class="btn btn-outline-secondary" href="{{ path('app_show_student', {'id': student.id }) }}" role="button">Toon Student</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+{% extends 'base.html.twig' %}
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
+{% block body %}
 
-#[ORM\Entity]
-class Student
-{
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    <h1 class="masthead-heading text-uppercase mb-0">
+        {{ student.firstName }} {{ student.lastName }}
+    </h1>
+    <table class="table table-hover table-striped">
+        <thead>
+        <tr>
+            <th>Voornaam</th>
+            <td>{{ student.firstName }}</td>
+        </tr>
+        <tr>
+            <th>Achternaam</th>
+            <td>{{ student.lastName }}</td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td>{{ student.email }}</td>
+        </tr>
+        <tr>
+            <th>Leeftijd</th>
+            <td>{{ student.age }}</td>
+        </tr>
 
-    #[ORM\Column(length: 255)]
-    private ?string $firstName = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $lastName = null;
-
-    #[ORM\Column(length: 255, unique: true)]
-    private ?string $email = null;
-
-    #[ORM\Column]
-    private ?int $age = null;
-
-    #[ORM\ManyToOne(targetEntity: SchoolGroup::class, inversedBy: 'students')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?SchoolGroup $schoolGroup = null;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getFirstName(): ?string
-    {
-        return $this->firstName;
-    }
-
-    public function setFirstName(string $firstName): self
-    {
-        $this->firstName = $firstName;
-        return $this;
-    }
-
-    public function getLastName(): ?string
-    {
-        return $this->lastName;
-    }
-
-    public function setLastName(string $lastName): self
-    {
-        $this->lastName = $lastName;
-        return $this;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-        return $this;
-    }
-
-    public function getAge(): ?int
-    {
-        return $this->age;
-    }
-
-    public function setAge(int $age): self
-    {
-        $this->age = $age;
-        return $this;
-    }
-
-    public function getSchoolGroup(): ?SchoolGroup
-    {
-        return $this->schoolGroup;
-    }
-
-    public function setSchoolGroup(?SchoolGroup $schoolGroup): self
-    {
-        $this->schoolGroup = $schoolGroup;
-        return $this;
-    }
-}
-
-// StudentController.php
-
-namespace App\Controller;
-
-use App\Entity\Student;
-use App\Form\StudentType;
-use App\Repository\StudentRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-
-class StudentController extends AbstractController
-{
-    #[Route('/students', name: 'student_index', methods: ['GET'])]
-    public function index(StudentRepository $studentRepository): Response
-    {
-        return $this->render('student/index.html.twig', [
-            'students' => $studentRepository->findAll(),
-        ]);
-    }
-
-    #[Route('/student/new', name: 'student_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $student = new Student();
-        $form = $this->createForm(StudentType::class, $student);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($student);
-            $entityManager->flush();
-            return $this->redirectToRoute('student_index');
-        }
-
-        return $this->render('student/new.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
-    #[Route('/student/{id}', name: 'student_show', methods: ['GET'])]
-    public function show(Student $student): Response
-    {
-        return $this->render('student/show.html.twig', [
-            'student' => $student,
-        ]);
-    }
-
-    #[Route('/student/{id}/edit', name: 'student_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Student $student, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(StudentType::class, $student);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-            return $this->redirectToRoute('student_index');
-        }
-
-        return $this->render('student/edit.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
-    #[Route('/student/{id}', name: 'student_delete', methods: ['POST'])]
-    public function delete(Request $request, Student $student, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete' . $student->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($student);
-            $entityManager->flush();
-        }
-        return $this->redirectToRoute('student_index');
-    }
-}
+        </tr>
+        </thead>
+    </table>
+{% endblock %}
